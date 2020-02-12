@@ -27,13 +27,26 @@ import "./assets/css/demo.css";
 import "./assets/css/pe-icon-7-stroke.css";
 
 import AdminLayout from "layouts/Admin.jsx";
+import LoginLayout from "layouts/Login.jsx";
+
+import { createStore, applyMiddleware } from 'redux'
+import { Provider } from 'react-redux'
+import thunkMiddleware from 'redux-thunk'
+import api from './middleware/api'
+import appReducer from './reducers'
+
+let createStoreWithMiddleware = applyMiddleware(thunkMiddleware, api)(createStore)
+let store = createStoreWithMiddleware(appReducer)
 
 ReactDOM.render(
-  <BrowserRouter>
-    <Switch>
-      <Route path="/admin" render={props => <AdminLayout {...props} />} />
-      <Redirect from="/" to="/admin/dashboard" />
-    </Switch>
-  </BrowserRouter>,
+  <Provider store={store}>
+    <BrowserRouter>
+      <Switch>
+        <Route path="/admin" render={props => <AdminLayout {...props} />} />
+        <Route path="/auth/login" render={ props => <LoginLayout {...props}/>}/>
+        <Redirect from="/" to="/admin/dashboard" />
+      </Switch>
+    </BrowserRouter>
+  </Provider>,
   document.getElementById("root")
 );
